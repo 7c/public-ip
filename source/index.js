@@ -1,13 +1,11 @@
-import {promisify} from 'node:util';
-import dgram from 'node:dgram';
-import dns from 'dns-socket';
-import {createPublicIp, IpNotFoundError} from './core.js';
-import {validateIp} from './utils.js';
-import {queryHttps} from './query.js';
-import {dnsServers, httpsUrls} from './constants.js';
-import {createIpFunction} from './shared.js';
-
-export {IpNotFoundError} from './core.js';
+const {promisify} = require('node:util');
+const dgram = require('node:dgram');
+const dns = require('dns-socket');
+const {createPublicIp, IpNotFoundError} = require('./core.js');
+const {validateIp} = require('./utils.js');
+const {queryHttps} = require('./query.js');
+const {dnsServers, httpsUrls} = require('./constants.js');
+const {createIpFunction} = require('./shared.js');
 
 const createDnsQuery = (server, version, {name, type, transform}) => {
 	const socket = dns({
@@ -52,19 +50,26 @@ const queryDns = async version => {
 	}
 };
 
-const queryAll = async (version, options) => {
+const queryAll = async (version, options, abortSignal) => {
 	try {
 		return await queryDns(version);
 	} catch {
-		return queryHttps(version, httpsUrls[version], options);
+		return queryHttps(version, httpsUrls[version], options, abortSignal);
 	}
 };
 
-const nodeQueryFunction = (version, options) => options.onlyHttps
-	? queryHttps(version, httpsUrls[version], options)
-	: queryAll(version, options);
+const nodeQueryFunction = (version, options, abortSignal) => options.onlyHttps
+	? queryHttps(version, httpsUrls[version], options, abortSignal)
+	: queryAll(version, options, abortSignal);
 
-export const publicIpv4 = createIpFunction('v4', nodeQueryFunction);
-export const publicIpv6 = createIpFunction('v6', nodeQueryFunction);
+const publicIpv4 = createIpFunction('v4', nodeQueryFunction);
+const publicIpv6 = createIpFunction('v6', nodeQueryFunction);
+const publicIp = createPublicIp(publicIpv4, publicIpv6);
 
-export const publicIp = createPublicIp(publicIpv4, publicIpv6);
+module.exports = {
+	publicIpv4,
+	publicIpv6,
+	publicIp,
+	IpNotFoundError,
+};
+module.exports.default = module.exports;

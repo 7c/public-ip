@@ -1,13 +1,18 @@
-import {createPublicIp} from './core.js';
-import {queryHttps} from './query-browser.js';
-import {browserUrls} from './constants.js';
-import {createIpFunction} from './shared-browser.js';
+const {createPublicIp, IpNotFoundError} = require('./core.js');
+const {queryHttps} = require('./query-browser.js');
+const {browserUrls} = require('./constants.js');
+const {createIpFunction} = require('./shared-browser.js');
 
-export {IpNotFoundError} from './core.js';
+const browserQueryFunction = (version, options, abortSignal) => queryHttps(version, browserUrls[version], options, abortSignal);
 
-const browserQueryFunction = (version, options) => queryHttps(version, browserUrls[version], options);
+const publicIpv4 = createIpFunction('v4', browserQueryFunction);
+const publicIpv6 = createIpFunction('v6', browserQueryFunction);
+const publicIp = createPublicIp(publicIpv4, publicIpv6);
 
-export const publicIpv4 = createIpFunction('v4', browserQueryFunction);
-export const publicIpv6 = createIpFunction('v6', browserQueryFunction);
-
-export const publicIp = createPublicIp(publicIpv4, publicIpv6);
+module.exports = {
+	publicIpv4,
+	publicIpv6,
+	publicIp,
+	IpNotFoundError,
+};
+module.exports.default = module.exports;

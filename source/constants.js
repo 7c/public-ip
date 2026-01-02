@@ -1,9 +1,9 @@
-export const defaults = {
+const defaults = {
 	timeout: 5000,
 	onlyHttps: false,
 };
 
-export const httpsUrls = {
+const httpsUrls = {
 	v4: [
 		'https://icanhazip.com/',
 		'https://api.ipify.org/',
@@ -14,8 +14,7 @@ export const httpsUrls = {
 	],
 };
 
-// Browser-specific URLs (IPv4/IPv6 specific endpoints)
-export const browserUrls = {
+const browserUrls = {
 	v4: [
 		'https://ipv4.icanhazip.com/',
 		'https://api.ipify.org/',
@@ -26,7 +25,7 @@ export const browserUrls = {
 	],
 };
 
-export const dnsServers = [
+const dnsServers = [
 	{
 		v4: {
 			servers: [
@@ -72,3 +71,10 @@ export const dnsServers = [
 		},
 	},
 ];
+
+module.exports = {
+	defaults,
+	httpsUrls,
+	browserUrls,
+	dnsServers,
+};

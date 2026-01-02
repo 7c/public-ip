@@ -1,28 +1,40 @@
-# public-ip
+# @7c/public-ip
+
+> A fork of [public-ip](https://github.com/sindresorhus/public-ip) (version 8.0.0) with a few changes to make it work with the 7c platform.
+
+## Changes
+- ported back to CommonJS
+- removed 'is-ip' dependency
+- fine tuned typescript definitions
+
+## Install
+```bash
+npm install https://github.com/7c/public-ip
+```
+
+
+## ORIGINAL README
 
 > Get your public IP address - very fast!
 
 In Node.js, it queries the DNS records of OpenDNS, Google DNS, and HTTPS services to determine your IP address. In browsers, it uses the [icanhaz](https://github.com/major/icanhaz) and [ipify](https://ipify.org) services through HTTPS.
 
-## Install
-
-```sh
-npm install public-ip
-```
 
 ## Usage
 
 ```js
-import {publicIp, publicIpv4, publicIpv6} from 'public-ip';
+const {publicIp, publicIpv4, publicIpv6} = require('public-ip');
 
-console.log(await publicIp()); // Tries IPv6 first, falls back to IPv4
-//=> 'fe80::200:f8ff:fe21:67cf'
+(async () => {
+	console.log(await publicIp()); // Tries IPv6 first, falls back to IPv4
+	//=> 'fe80::200:f8ff:fe21:67cf'
 
-console.log(await publicIpv6());
-//=> 'fe80::200:f8ff:fe21:67cf'
+	console.log(await publicIpv6());
+	//=> 'fe80::200:f8ff:fe21:67cf'
 
-console.log(await publicIpv4());
-//=> '46.5.21.123'
+	console.log(await publicIpv4());
+	//=> '46.5.21.123'
+})();
 ```
 
 ## API
@@ -58,13 +70,15 @@ Default: `[]`
 Add your own custom HTTPS endpoints to get the public IP from. They will only be used if everything else fails. Any service used as fallback *must* return the IP as a plain string.
 
 ```js
-import {publicIpv6} from 'public-ip';
+const {publicIpv6} = require('public-ip');
 
-await publicIpv6({
-	fallbackUrls: [
-		'https://ifconfig.co/ip'
-	]
-});
+(async () => {
+	await publicIpv6({
+		fallbackUrls: [
+			'https://ifconfig.co/ip',
+		],
+	});
+})();
 ```
 
 ##### timeout
@@ -83,20 +97,22 @@ An `AbortSignal` to cancel the operation. If both `timeout` and `signal` are pro
 ### Error Handling
 
 ```js
-import {publicIpv4, IpNotFoundError} from 'public-ip';
+const {publicIpv4, IpNotFoundError} = require('public-ip');
 
-try {
-	const ip = await publicIpv4({timeout: 5000});
-	console.log(ip);
-} catch (error) {
-	if (error instanceof IpNotFoundError) {
-		console.log('Could not determine public IP address');
-	} else if (error.name === 'AbortError') {
-		console.log('Request was cancelled');
-	} else {
-		console.log('An error occurred:', error.message);
+(async () => {
+	try {
+		const ip = await publicIpv4({timeout: 5000});
+		console.log(ip);
+	} catch (error) {
+		if (error instanceof IpNotFoundError) {
+			console.log('Could not determine public IP address');
+		} else if (error.name === 'AbortError') {
+			console.log('Request was cancelled');
+		} else {
+			console.log('An error occurred:', error.message);
+		}
 	}
-}
+})();
 ```
 
 ### IpNotFoundError

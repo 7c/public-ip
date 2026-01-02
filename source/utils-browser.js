@@ -1,5 +1,4 @@
-// Simple IP validation for browsers without external dependencies
-export const validateIp = (ip, version) => {
+const validateIp = (ip, version) => {
 	if (!ip || typeof ip !== 'string') {
 		return false;
 	}
@@ -17,7 +16,7 @@ export const validateIp = (ip, version) => {
 	});
 };
 
-export const createAbortSignal = (timeout, signal) => {
+const createAbortSignal = (timeout, signal) => {
 	if (signal) {
 		signal.throwIfAborted();
 	}
@@ -38,7 +37,7 @@ export const createAbortSignal = (timeout, signal) => {
 	return signals.length === 1 ? signals[0] : AbortSignal.any(signals);
 };
 
-export const withAbortSignal = async (promise, abortSignal) => {
+const withAbortSignal = async (promise, abortSignal) => {
 	if (!abortSignal) {
 		return promise;
 	}
@@ -50,4 +49,10 @@ export const withAbortSignal = async (promise, abortSignal) => {
 	});
 
 	return Promise.race([promise, abortPromise]);
+};
+
+module.exports = {
+	validateIp,
+	createAbortSignal,
+	withAbortSignal,
 };

@@ -34,13 +34,13 @@ export type Options = {
 
 	@example
 	```
-	import {publicIpv6} from 'public-ip';
+const {publicIpv6} = require('public-ip');
 
-	await publicIpv6({
-		fallbackUrls: [
-			'https://ifconfig.co/ip'
-		]
-	});
+await publicIpv6({
+	fallbackUrls: [
+		'https://ifconfig.co/ip',
+	],
+});
 	```
 	*/
 	readonly fallbackUrls?: readonly string[];
@@ -56,7 +56,7 @@ In Node.js, it queries the DNS records of OpenDNS, Google DNS, and HTTPS service
 
 @example
 ```
-import {publicIp} from 'public-ip';
+const {publicIp} = require('public-ip');
 
 console.log(await publicIp()); // Tries IPv6 first, falls back to IPv4
 //=> 'fe80::200:f8ff:fe21:67cf'
@@ -74,7 +74,7 @@ In Node.js, it queries the DNS records of OpenDNS, Google DNS, and HTTPS service
 
 @example
 ```
-import {publicIpv4} from 'public-ip';
+const {publicIpv4} = require('public-ip');
 
 console.log(await publicIpv4());
 //=> '46.5.21.123'
@@ -92,10 +92,21 @@ In Node.js, it queries the DNS records of OpenDNS, Google DNS, and HTTPS service
 
 @example
 ```
-import {publicIpv6} from 'public-ip';
+const {publicIpv6} = require('public-ip');
 
 console.log(await publicIpv6());
 //=> 'fe80::200:f8ff:fe21:67cf'
 ```
 */
 export function publicIpv6(options?: Options): Promise<string>;
+
+export type PublicIpModule = {
+	publicIp: typeof publicIp;
+	publicIpv4: typeof publicIpv4;
+	publicIpv6: typeof publicIpv6;
+	IpNotFoundError: typeof IpNotFoundError;
+};
+
+declare const publicIpModule: PublicIpModule;
+
+export default publicIpModule;

@@ -1,22 +1,19 @@
 {
-	"name": "public-ip",
-	"version": "8.0.0",
+	"name": "@7c/public-ip",
+	"version": "8.0.1",
 	"description": "Get your public IP address — very fast!",
 	"license": "MIT",
-	"repository": "sindresorhus/public-ip",
-	"funding": "https://github.com/sponsors/sindresorhus",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "https://sindresorhus.com"
-	},
-	"type": "module",
+	"repository": "7c/public-ip",
+	"types": "./source/index.d.ts",
 	"exports": {
-		"types": "./source/index.d.ts",
-		"node": "./source/index.js",
-		"default": "./source/browser.js"
+		".": {
+			"types": "./source/index.d.ts",
+			"browser": "./source/browser.js",
+			"node": "./source/index.js",
+			"require": "./source/index.js",
+			"default": "./source/browser.js"
+		}
 	},
-	"sideEffects": false,
 	"engines": {
 		"node": ">=20"
 	},
@@ -40,12 +37,18 @@
 		"dns"
 	],
 	"dependencies": {
-		"dns-socket": "^4.2.2",
-		"is-ip": "^5.0.1"
+		"dns-socket": "^4.2.2"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^8.0.1",
 		"typescript": "^5.9.2",
 		"xo": "^1.2.2"
+	},
+	"xo": {
+		"rules": {
+			"import-x/newline-after-import": "off",
+			"import-x/order": "off",
+			"unicorn/prefer-module": "off",
+			"unicorn/prefer-top-level-await": "off"
+		}
 	}
 }

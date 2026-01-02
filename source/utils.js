@@ -1,8 +1,8 @@
-import {isIPv6, isIPv4} from 'is-ip';
+const {isIPv4, isIPv6} = require('node:net');
 
-export const validateIp = (ip, version) => Boolean(ip && (version === 'v6' ? isIPv6(ip) : isIPv4(ip)));
+const validateIp = (ip, version) => Boolean(ip && (version === 'v6' ? isIPv6(ip) : isIPv4(ip)));
 
-export const createAbortSignal = (timeout, signal) => {
+const createAbortSignal = (timeout, signal) => {
 	if (signal) {
 		signal.throwIfAborted();
 	}
@@ -23,7 +23,7 @@ export const createAbortSignal = (timeout, signal) => {
 	return signals.length === 1 ? signals[0] : AbortSignal.any(signals);
 };
 
-export const withAbortSignal = async (promise, abortSignal) => {
+const withAbortSignal = async (promise, abortSignal) => {
 	if (!abortSignal) {
 		return promise;
 	}
@@ -35,4 +35,10 @@ export const withAbortSignal = async (promise, abortSignal) => {
 	});
 
 	return Promise.race([promise, abortPromise]);
+};
+
+module.exports = {
+	validateIp,
+	createAbortSignal,
+	withAbortSignal,
 };

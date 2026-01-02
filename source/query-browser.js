@@ -1,14 +1,14 @@
-import {IpNotFoundError} from './core.js';
-import {validateIp, createAbortSignal, withAbortSignal} from './utils-browser.js';
+const {IpNotFoundError} = require('./core.js');
+const {validateIp, createAbortSignal, withAbortSignal} = require('./utils-browser.js');
 
-export const queryHttps = async (version, urls, options = {}) => {
+const queryHttps = async (version, urls, options = {}, abortSignal) => {
 	const urlList = [
 		...urls,
 		...(options.fallbackUrls ?? []),
 	];
 
 	const requests = urlList.map(async url => {
-		const response = await fetch(url);
+		const response = await fetch(url, {signal: abortSignal});
 
 		if (!response.ok) {
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -33,7 +33,12 @@ export const queryHttps = async (version, urls, options = {}) => {
 	}
 };
 
-export const createQuery = (version, queryFunction, options) => {
+const createQuery = (version, queryFunction, options) => {
 	const abortSignal = createAbortSignal(options.timeout, options.signal);
-	return withAbortSignal(queryFunction(), abortSignal);
+	return withAbortSignal(queryFunction(abortSignal), abortSignal);
+};
+
+module.exports = {
+	queryHttps,
+	createQuery,
 };

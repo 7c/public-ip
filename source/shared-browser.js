@@ -1,11 +1,17 @@
-import {createQuery} from './query-browser.js';
-import {defaults} from './constants.js';
+const {createQuery} = require('./query-browser.js');
+const {defaults} = require('./constants.js');
 
-export const createIpFunction = (version, queryFunction) => (options = {}) => {
+const createIpFunction = (version, queryFunction) => (options = {}) => {
 	const mergedOptions = {
 		...defaults,
 		...options,
 	};
 
-	return createQuery(version, () => queryFunction(version, mergedOptions), mergedOptions);
+	return createQuery(
+		version,
+		abortSignal => queryFunction(version, mergedOptions, abortSignal),
+		mergedOptions,
+	);
 };
+
+module.exports = {createIpFunction};

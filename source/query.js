@@ -1,7 +1,7 @@
-import {IpNotFoundError} from './core.js';
-import {validateIp, createAbortSignal, withAbortSignal} from './utils.js';
+const {IpNotFoundError} = require('./core.js');
+const {validateIp, createAbortSignal, withAbortSignal} = require('./utils.js');
 
-export const queryHttps = async (version, urls, options = {}) => {
+const queryHttps = async (version, urls, options = {}, abortSignal) => {
 	const urlList = [
 		...urls,
 		...(options.fallbackUrls ?? []),
@@ -12,6 +12,7 @@ export const queryHttps = async (version, urls, options = {}) => {
 			headers: {
 				'User-Agent': 'public-ip',
 			},
+			signal: abortSignal,
 		});
 
 		if (!response.ok) {
@@ -37,7 +38,12 @@ export const queryHttps = async (version, urls, options = {}) => {
 	}
 };
 
-export const createQuery = (version, queryFunction, options) => {
+const createQuery = (version, queryFunction, options) => {
 	const abortSignal = createAbortSignal(options.timeout, options.signal);
-	return withAbortSignal(queryFunction(), abortSignal);
+	return withAbortSignal(queryFunction(abortSignal), abortSignal);
+};
+
+module.exports = {
+	queryHttps,
+	createQuery,
 };
