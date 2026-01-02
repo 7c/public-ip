@@ -9,7 +9,7 @@
 
 ## Install
 ```bash
-npm install https://github.com/7c/public-ip
+npm install --save https://github.com/7c/public-ip
 ```
 
 
@@ -22,19 +22,17 @@ In Node.js, it queries the DNS records of OpenDNS, Google DNS, and HTTPS service
 
 ## Usage
 
-```js
-const {publicIp, publicIpv4, publicIpv6} = require('public-ip');
+```typescript
+import { publicIp, publicIpv4, publicIpv6 } from '@7c/public-ip';
 
-(async () => {
-	console.log(await publicIp()); // Tries IPv6 first, falls back to IPv4
-	//=> 'fe80::200:f8ff:fe21:67cf'
+const ip = await publicIp(); // Tries IPv6 first, falls back to IPv4
+//=> 'fe80::200:f8ff:fe21:67cf'
 
-	console.log(await publicIpv6());
-	//=> 'fe80::200:f8ff:fe21:67cf'
+const ipv6 = await publicIpv6();
+//=> 'fe80::200:f8ff:fe21:67cf'
 
-	console.log(await publicIpv4());
-	//=> '46.5.21.123'
-})();
+const ipv4 = await publicIpv4();
+//=> '46.5.21.123'
 ```
 
 ## API
@@ -69,16 +67,14 @@ Default: `[]`
 
 Add your own custom HTTPS endpoints to get the public IP from. They will only be used if everything else fails. Any service used as fallback *must* return the IP as a plain string.
 
-```js
-const {publicIpv6} = require('public-ip');
+```typescript
+import { publicIpv6 } from '@7c/public-ip';
 
-(async () => {
-	await publicIpv6({
-		fallbackUrls: [
-			'https://ifconfig.co/ip',
-		],
-	});
-})();
+const ip = await publicIpv6({
+	fallbackUrls: [
+		'https://ifconfig.co/ip',
+	],
+});
 ```
 
 ##### timeout
@@ -96,30 +92,24 @@ An `AbortSignal` to cancel the operation. If both `timeout` and `signal` are pro
 
 ### Error Handling
 
-```js
-const {publicIpv4, IpNotFoundError} = require('public-ip');
+```typescript
+import { publicIpv4, IpNotFoundError } from '@7c/public-ip';
 
-(async () => {
-	try {
-		const ip = await publicIpv4({timeout: 5000});
-		console.log(ip);
-	} catch (error) {
-		if (error instanceof IpNotFoundError) {
-			console.log('Could not determine public IP address');
-		} else if (error.name === 'AbortError') {
-			console.log('Request was cancelled');
-		} else {
-			console.log('An error occurred:', error.message);
-		}
+try {
+	const ip = await publicIpv4({ timeout: 5000 });
+	console.log(ip);
+} catch (error) {
+	if (error instanceof IpNotFoundError) {
+		console.log('Could not determine public IP address');
+	} else if (error instanceof Error && error.name === 'AbortError') {
+		console.log('Request was cancelled');
+	} else if (error instanceof Error) {
+		console.log('An error occurred:', error.message);
 	}
-})();
+}
 ```
 
 ### IpNotFoundError
 
 Error thrown when the public IP address could not be found.
 
-## Related
-
-- [public-ip-cli](https://github.com/sindresorhus/public-ip-cli) - CLI for this module
-- [internal-ip](https://github.com/sindresorhus/internal-ip) - Get your internal IP address
