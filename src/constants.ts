@@ -1,31 +1,53 @@
-const defaults = {
+import type {IpVersion} from './types';
+
+export type Defaults = {
+	timeout: number;
+	onlyHttps: boolean;
+};
+
+export const defaults: Defaults = {
 	timeout: 5000,
 	onlyHttps: false,
 };
 
-const httpsUrls = {
+export type UrlMap = Record<IpVersion, string[]>;
+
+export const httpsUrls: UrlMap = {
 	v4: [
 		'https://icanhazip.com/',
 		'https://api.ipify.org/',
+		'https://ip4.ip8.com/',
 	],
 	v6: [
 		'https://icanhazip.com/',
 		'https://api6.ipify.org/',
+		'https://ip6.ip8.com/',
 	],
 };
 
-const browserUrls = {
+export const browserUrls: UrlMap = {
 	v4: [
 		'https://ipv4.icanhazip.com/',
 		'https://api.ipify.org/',
+		'https://ip4.ip8.com/',
 	],
 	v6: [
 		'https://ipv6.icanhazip.com/',
 		'https://api6.ipify.org/',
+		'https://ip6.ip8.com/',
 	],
 };
 
-const dnsServers = [
+export type DnsQuestionConfig = {
+	servers: string[];
+	name: string;
+	type: string;
+	transform?: (ip: string) => string;
+};
+
+export type DnsServerConfig = Record<IpVersion, DnsQuestionConfig>;
+
+export const dnsServers: DnsServerConfig[] = [
 	{
 		v4: {
 			servers: [
@@ -71,10 +93,3 @@ const dnsServers = [
 		},
 	},
 ];
-
-module.exports = {
-	defaults,
-	httpsUrls,
-	browserUrls,
-	dnsServers,
-};

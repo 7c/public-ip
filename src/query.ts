@@ -1,7 +1,16 @@
-const {IpNotFoundError} = require('./core.js');
-const {validateIp, createAbortSignal, withAbortSignal} = require('./utils.js');
+import {IpNotFoundError} from './core';
+import {validateIp, createAbortSignal, withAbortSignal} from './utils';
+import type {IpVersion, Options} from './types';
 
-const queryHttps = async (version, urls, options = {}, abortSignal) => {
+const lastAggregateError = (error: unknown): unknown =>
+	(error instanceof AggregateError && error.errors.length > 0 ? error.errors.at(-1) : error);
+
+export const queryHttps = async (
+	version: IpVersion,
+	urls: readonly string[],
+	options: Options = {},
+	abortSignal?: AbortSignal,
+): Promise<string> => {
 	const urlList = [
 		...urls,
 		...(options.fallbackUrls ?? []),
@@ -32,18 +41,15 @@ const queryHttps = async (version, urls, options = {}, abortSignal) => {
 	try {
 		return await Promise.any(requests);
 	} catch (error) {
-		const errors = error.errors ?? [];
-		const lastError = errors.at?.(-1) ?? error;
-		throw new IpNotFoundError({cause: lastError});
+		throw new IpNotFoundError({cause: lastAggregateError(error)});
 	}
 };
 
-const createQuery = (version, queryFunction, options) => {
+export const createQuery = (
+	_version: IpVersion,
+	queryFunction: (abortSignal?: AbortSignal) => Promise<string>,
+	options: Options,
+): Promise<string> => {
 	const abortSignal = createAbortSignal(options.timeout, options.signal);
 	return withAbortSignal(queryFunction(abortSignal), abortSignal);
-};
-
-module.exports = {
-	queryHttps,
-	createQuery,
 };

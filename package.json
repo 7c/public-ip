@@ -1,27 +1,35 @@
 {
 	"name": "@7c/public-ip",
-	"version": "8.0.1",
+	"version": "8.0.2",
 	"description": "Get your public IP address — very fast!",
 	"license": "MIT",
 	"repository": "7c/public-ip",
-	"types": "./source/index.d.ts",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
 	"exports": {
 		".": {
-			"types": "./source/index.d.ts",
-			"browser": "./source/browser.js",
-			"node": "./source/index.js",
-			"require": "./source/index.js",
-			"default": "./source/browser.js"
+			"types": "./dist/index.d.ts",
+			"browser": "./dist/browser.js",
+			"node": "./dist/index.js",
+			"require": "./dist/index.js",
+			"default": "./dist/browser.js"
 		}
 	},
 	"engines": {
 		"node": ">=20"
 	},
 	"scripts": {
-		"test": "xo && node --test test-node.js && tsc source/index.d.ts --skipLibCheck"
+		"clean": "rm -rf dist",
+		"build": "npm run clean && tsc -p tsconfig.json",
+		"typecheck": "tsc -p tsconfig.test.json",
+		"test": "npm run typecheck && jest",
+		"test:unit": "jest test/unit.test.ts test/index.test.ts",
+		"test:live": "jest test/live.test.ts",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm run build"
 	},
 	"files": [
-		"source"
+		"dist"
 	],
 	"keywords": [
 		"get",
@@ -40,15 +48,10 @@
 		"dns-socket": "^4.2.2"
 	},
 	"devDependencies": {
-		"typescript": "^5.9.2",
-		"xo": "^1.2.2"
-	},
-	"xo": {
-		"rules": {
-			"import-x/newline-after-import": "off",
-			"import-x/order": "off",
-			"unicorn/prefer-module": "off",
-			"unicorn/prefer-top-level-await": "off"
-		}
+		"@types/jest": "^29.5.14",
+		"@types/node": "^20.19.0",
+		"jest": "^29.7.0",
+		"ts-jest": "^29.2.5",
+		"typescript": "^5.9.2"
 	}
 }

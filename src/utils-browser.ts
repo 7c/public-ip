@@ -1,4 +1,6 @@
-const validateIp = (ip, version) => {
+import type {IpVersion} from './types';
+
+export const validateIp = (ip: string, version: IpVersion): boolean => {
 	if (!ip || typeof ip !== 'string') {
 		return false;
 	}
@@ -16,7 +18,7 @@ const validateIp = (ip, version) => {
 	});
 };
 
-const createAbortSignal = (timeout, signal) => {
+export const createAbortSignal = (timeout?: number, signal?: AbortSignal): AbortSignal | undefined => {
 	if (signal) {
 		signal.throwIfAborted();
 	}
@@ -25,7 +27,7 @@ const createAbortSignal = (timeout, signal) => {
 		return undefined;
 	}
 
-	const signals = [];
+	const signals: AbortSignal[] = [];
 	if (timeout) {
 		signals.push(AbortSignal.timeout(timeout));
 	}
@@ -37,22 +39,18 @@ const createAbortSignal = (timeout, signal) => {
 	return signals.length === 1 ? signals[0] : AbortSignal.any(signals);
 };
 
-const withAbortSignal = async (promise, abortSignal) => {
+export const withAbortSignal = async <T>(promise: Promise<T>, abortSignal?: AbortSignal): Promise<T> => {
 	if (!abortSignal) {
 		return promise;
 	}
 
 	abortSignal.throwIfAborted();
 
-	const abortPromise = new Promise((_resolve, reject) => {
-		abortSignal.addEventListener('abort', () => reject(abortSignal.reason), {once: true});
+	const abortPromise = new Promise<never>((_resolve, reject) => {
+		abortSignal.addEventListener('abort', () => {
+			reject(abortSignal.reason);
+		}, {once: true});
 	});
 
 	return Promise.race([promise, abortPromise]);
-};
-
-module.exports = {
-	validateIp,
-	createAbortSignal,
-	withAbortSignal,
 };

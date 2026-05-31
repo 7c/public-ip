@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"target": "ES2022",
+		"lib": [
+			"ES2023",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"newLine": "lf",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noEmitOnError": true,
+		"useDefineForClassFields": true,
+		"skipLibCheck": true
+	},
+	"include": [
+		"src/**/*"
+	]
+}
