@@ -25,7 +25,6 @@
 		"test": "npm run typecheck && jest",
 		"test:unit": "jest test/unit.test.ts test/index.test.ts",
 		"test:live": "jest test/live.test.ts",
-		"prepare": "npm run build",
 		"prepublishOnly": "npm run build"
 	},
 	"files": [
